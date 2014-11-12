@@ -1,0 +1,12 @@
+{
+  "name": "angular-persona-jwt",
+  "description": "persona auth with json web token with angularJs",
+  "version": "0.0.1",
+  "main": "src/index.js",
+  "dependencies": {
+    "angular": "*"
+  },
+  "devDependencies": {
+    "angular-mocks": "*"
+  }
+}

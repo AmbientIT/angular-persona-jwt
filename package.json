@@ -1,0 +1,15 @@
+{
+  "name": "code-grader-client",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "*",
+    "del": "*",
+    "run-sequence": "*",
+    "gulp-concat": "*",
+    "gulp-jshint": "*",
+    "gulp-util": "*",
+    "gulp-uglify": "*",
+    "gulp-sourcemaps": "*"
+  }
+}
