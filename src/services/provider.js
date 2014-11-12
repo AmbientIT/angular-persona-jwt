@@ -15,6 +15,9 @@
 
     function Persona($rootScope, $http) {
       var service = {};
+
+      service.loggedUser = {};
+
       service.login = function (assertion) {
         var param = {
           assertion: assertion,
