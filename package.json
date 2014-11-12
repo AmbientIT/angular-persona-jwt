@@ -10,6 +10,7 @@
     "gulp-jshint": "*",
     "gulp-util": "*",
     "gulp-uglify": "*",
-    "gulp-sourcemaps": "*"
+    "gulp-sourcemaps": "*",
+    "gulp-ng-annotate" : "*"
   }
 }

@@ -4,7 +4,8 @@ var gulp = require('gulp'),
   runSequence = require('run-sequence'),
   del = require('del'),
   uglify = require('gulp-uglify'),
-  sourcemaps = require('gulp-sourcemaps');
+  sourcemaps = require('gulp-sourcemaps'),
+  annotate = require('gulp-ng-annotate');
 
 
 // PATHS
@@ -18,6 +19,7 @@ gulp.task('buildJs', function () {
   gulp.src(pathToJsSource)
     .pipe(sourcemaps.init())
     .pipe(concat('angular-persona-jwt.js'))
+    .pipe(annotate())
     .pipe(uglify())
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist'));
