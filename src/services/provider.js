@@ -1,7 +1,7 @@
 (function(angular){
   'use strict';
 
-  function personaProvider($windowProvider) {
+  function personaProvider($windowProvider,$httpProvider) {
 
     var $window = $windowProvider.$get(),
       options = {
@@ -11,11 +11,22 @@
       };
     this.config = function (data) {
       options = angular.extend(options,data);
+      $httpProvider.interceptors.push(function ($q) {
+        return {
+          request: function (httpConfig) {
+            var token = $window.localStorage.getItem(options.tokenName);
+            if (token) {
+              httpConfig.headers.Authorization = 'Bearer ' + token;
+            }
+            return httpConfig;
+          },
+          responseError: function (response) {
+            return $q.reject(response);
+          }
+        };
+      });
     };
 
-    this.getTokenName = function(){
-      return options.tokenName;
-    };
 
     function Persona($rootScope, $http) {
       var service = {};
