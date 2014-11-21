@@ -11,6 +11,7 @@
     "gulp-util": "*",
     "gulp-uglify": "*",
     "gulp-sourcemaps": "*",
-    "gulp-ng-annotate" : "*"
+    "gulp-ng-annotate" : "*",
+    "gulp-angular-templatecache" : "*"
   }
 }

@@ -13,10 +13,15 @@
       options = angular.extend(options,data);
     };
 
+    this.getTokenName = function(){
+      return options.tokenName;
+    };
+
     function Persona($rootScope, $http) {
       var service = {};
 
       service.loggedUser = {};
+
 
       service.login = function (assertion) {
         var param = {

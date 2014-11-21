@@ -1,11 +1,11 @@
 (function(angular){
   'use strict';
 
-  function config($httpProvider){
+  function config($httpProvider,personaProvider){
     $httpProvider.interceptors.push(function ($q) {
       return {
         request: function (httpConfig) {
-          var token = localStorage.getItem('token');
+          var token = localStorage.getItem(personaProvider.getTokenName());
           if (token) {
             httpConfig.headers.Authorization = 'Bearer ' + token;
           }

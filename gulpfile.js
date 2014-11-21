@@ -5,7 +5,8 @@ var gulp = require('gulp'),
   del = require('del'),
   uglify = require('gulp-uglify'),
   sourcemaps = require('gulp-sourcemaps'),
-  annotate = require('gulp-ng-annotate');
+  annotate = require('gulp-ng-annotate'),
+  templateCache = require('gulp-angular-templatecache');
 
 
 // PATHS
@@ -24,6 +25,7 @@ gulp.task('buildJs', function () {
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist'));
 });
+
 
 gulp.task('watchSource', function () {
   gulp.watch(pathToJsSource, ['buildJs', 'lint']);
