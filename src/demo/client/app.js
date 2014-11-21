@@ -6,4 +6,11 @@ angular.module('demo.app', [
         $scope.onLogin = function () {
             console.log('Logged In');
         };
+    })
+
+    .config(function (personaProvider) {
+        personaProvider.config({
+            baseUrl: 'http://localhost:5210',
+            tokenName: 'demo-token'
+        });
     });

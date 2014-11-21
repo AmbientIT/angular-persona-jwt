@@ -9,24 +9,29 @@ var gulp = require('gulp'),
     lrserver = require('tiny-lr')(),
     express = require('express'),
     refresh = require('gulp-livereload'),
-    livereload = require('connect-livereload');
+    livereload = require('connect-livereload'),
+    nodemon = require('gulp-nodemon');
 
 
 var livereloadport = 35729,
-    serverport = 5040;
+    serverport = 5200;
 
-// DEV SERVER
-var devServer = express();
-devServer.use(livereload({port: livereloadport}));
-devServer.use(express.static('./src'));
-devServer.all('/*', function (req, res) {
-    res.sendFile('demo/client/index.html', {root: 'src'});
-});
 
 // PATHS
 var pathToJsSource = 'src/app/**/*.js',
     pathToDemoClientJsSource = 'src/demo/client/**/*.js',
-    pathToDemoClientIndexFile = 'src/demo/client/index.html';
+    pathToDemoClientIndexFile = 'src/demo/client/index.html',
+    pathToDemoServerSource = 'src/demo/server/**/*.js';
+
+
+// DEV STATIC SERVER
+var staticDevServer = express();
+staticDevServer.use(livereload({port: livereloadport}));
+staticDevServer.use(express.static('./src'));
+staticDevServer.all('/*', function (req, res) {
+    res.sendFile('demo/client/index.html', {root: 'src'});
+});
+
 
 // DEV
 gulp.task('default', ['dev'], function () {
@@ -34,7 +39,8 @@ gulp.task('default', ['dev'], function () {
 
 gulp.task('dev', [
     'buildDev',
-    'startDevServer',
+    'startDemoStaticServer',
+    'startDemoNodeServer',
     'watchSource'
 ], function () {
 });
@@ -53,9 +59,13 @@ gulp.task('concatJs', function () {
         .pipe(refresh(lrserver));
 });
 
-gulp.task('startDevServer', function () {
-    devServer.listen(serverport);
+gulp.task('startDemoStaticServer', function () {
+    staticDevServer.listen(serverport);
     lrserver.listen(livereloadport);
+});
+
+gulp.task('startDemoNodeServer', function () {
+    nodemon({script: 'src/demo/server/server.js'});
 });
 
 gulp.task('watchSource', function () {
@@ -77,15 +87,13 @@ gulp.task('lint', function () {
 
 
 // DIST
-gulp.task('dist', ['cacheTemplates'], function () {
+gulp.task('dist', [], function () {
         runSequence(
             'cleanBuildFolder',
             'cleanDistFolder',
-            'cacheTemplates',
             [
                 'distJs',
-                'distMinifiedJs',
-                'distStyle'
+                'distMinifiedJs'
             ]
         );
     }
