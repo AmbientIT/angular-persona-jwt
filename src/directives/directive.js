@@ -8,7 +8,9 @@
 
     return {
       restrict: 'EA',
-      scope: true,
+      scope: {
+        onlogin : '='
+      },
       transclude: true,
       controller: function () {
         this.login = login;
@@ -27,8 +29,15 @@
       restrict: 'EA',
       transclude: true,
       scope: true,
-      controller: function () {
+      controller: function ($scope,persona) {
         this.logout = logout;
+        $scope.$watch(function(){
+          return persona.loggedInUser
+        },function(value){
+          if(value){
+            $scope.onLogin();
+          }
+        })
       },
       controllerAs: 'persona',
       template: '<div ng-transclude ng-click="persona.logout()"></div>'

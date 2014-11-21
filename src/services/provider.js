@@ -28,7 +28,7 @@
     };
 
 
-    function Persona($rootScope, $http) {
+    function Persona($http) {
       var service = {};
 
       service.loggedUser = {};
@@ -43,7 +43,7 @@
           service.loggedUser = data.user;
           $window.localStorage.setItem(options.tokenName, data.token);
         }).error(function (err) {
-          $rootScope.$broadcast('login:error', err);
+          console.log(err);
         });
       };
 
