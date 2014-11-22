@@ -14,14 +14,13 @@ var gulp = require('gulp'),
 
 
 var livereloadport = 35729,
-    serverport = 5200;
+    serverport = 5000;
 
 
 // PATHS
 var pathToJsSource = 'src/app/**/*.js',
     pathToDemoClientJsSource = 'src/demo/client/**/*.js',
-    pathToDemoClientIndexFile = 'src/demo/client/index.html',
-    pathToDemoServerSource = 'src/demo/server/**/*.js';
+    pathToDemoClientIndexFile = 'src/demo/client/index.html';
 
 
 // DEV STATIC SERVER

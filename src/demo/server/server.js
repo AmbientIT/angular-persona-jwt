@@ -3,7 +3,9 @@ var express = require('express'),
     cors = require('cors'),
     bodyParser = require('body-parser'),
     jwt = require('jwt-simple'),
-    moment = require('moment');
+    moment = require('moment'),
+    ensureAuthenticated = require('./auth.middleware').ensureAuthenticated,
+    conf = require('./conf');
 
 var app = express();
 
@@ -17,31 +19,51 @@ app.post('/login', function (request, response) {
         body: [
             JSON.stringify({
                 assertion: request.body.assertion,
-                audience: 'http://localhost:5200'
+                audience: 'http://localhost:5000'
             })
         ],
         headers: {
             'Content-Type': 'application/json'
         }
     };
-    http.request(options).then(function (verificationResult) {
-        verificationResult.body.read().then(function (body) {
-            var user = {
-                email: JSON.parse(body).email
-            };
-            var payload = {
-                user: user,
-                iat: moment().valueOf(),
-                exp: moment().add(7, 'days').valueOf()
-            };
-            response.json({
-                user: user,
-                token: jwt.encode(payload, 'MyTokenSecret')
+    http.request(options).then(function (personaResponse) {
+        personaResponse.body.read()
+            .then(function (body) {
+                var personaAuthData = JSON.parse(body);
+                if (personaAuthData.status === 'okay') {
+                    response.json({
+                        user: {email: personaAuthData.email},
+                        token: createToken(personaAuthData)
+                    });
+                } else {
+                    response.status(401).json({message: 'Persona authentication failed'});
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                response.status(500).json({message: 'Server error'});
             });
-        });
     });
 });
 
-app.listen(5210);
 
-console.log('Demo node server started on port ' + 5210);
+function createToken(personaAuthData) {
+    var user = {
+        email: personaAuthData.email
+    };
+    var payload = {
+        user: user,
+        iat: moment().valueOf(),
+        exp: moment().add(7, 'days').valueOf()
+    };
+    return jwt.encode(payload, conf.TOKEN_SECRET);
+}
+
+app.get('/me', ensureAuthenticated, function (request, response) {
+    response.send(request.user);
+});
+
+
+var port = 5001;
+app.listen(port);
+console.log('Demo node server started on port ' + port);

@@ -7,14 +7,14 @@
             options = {
                 baseUrl: 'localhost',
                 audience: $window.location.href,
-                tokenName: 'token'
+                tokenStorageKey: 'angular-persona-jwt-token'
             };
         this.config = function (data) {
             options = angular.extend(options, data);
             $httpProvider.interceptors.push(function ($q) {
                 return {
                     request: function (httpConfig) {
-                        var token = $window.localStorage.getItem(options.tokenName);
+                        var token = $window.localStorage.getItem(options.tokenStorageKey);
                         if (token) {
                             httpConfig.headers.Authorization = 'Bearer ' + token;
                         }
@@ -38,14 +38,14 @@
                 };
                 $http.post(options.baseUrl + '/login', param).success(function (data) {
                     service.loggedUser = data.user;
-                    $window.localStorage.setItem(options.tokenName, data.token);
+                    $window.localStorage.setItem(options.tokenStorageKey, data.token);
                 }).error(function (err) {
                     console.log(err);
                 });
             };
 
             service.logout = function () {
-                $window.localStorage.removeItem(options.tokenName);
+                $window.localStorage.removeItem(options.tokenStorageKey);
                 service.loggedUser = null;
             };
 
