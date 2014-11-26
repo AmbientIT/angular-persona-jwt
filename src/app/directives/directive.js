@@ -32,12 +32,12 @@
             controller: function ($scope, persona) {
                 this.logout = logout;
                 $scope.$watch(function () {
-                    return persona.loggedInUser;
-                }, function (value) {
-                    if (value) {
+                    return persona;
+                }, function () {
+                    if (persona.loggedUser) {
                         $scope.onLogin();
                     }
-                });
+                }, true);
             },
             controllerAs: 'persona',
             template: '<div ng-transclude ng-click="persona.logout()"></div>'
