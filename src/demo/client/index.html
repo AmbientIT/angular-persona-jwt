@@ -23,10 +23,10 @@
 
 <h1>Login</h1>
 
-<persona-login on-login="onLogin">
+<persona-login on-login="onLogin" on-logout="onLogout" ng-show="!loggedUser">
     <md-button class="md-button md-deep-orange-theme">Login</md-button>
 </persona-login>
-<persona-logout>
+<persona-logout ng-if="loggedUser" ng-click="onLogout()">
     <md-button class="md-button md-deep-red-theme">Logout</md-button>
 </persona-logout>
 

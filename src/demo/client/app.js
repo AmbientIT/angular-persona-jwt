@@ -2,10 +2,17 @@ angular.module('demo.app', [
     'angular-persona-jwt'
 ])
 
-    .controller('DemoAppController', function ($scope, $http, $window) {
+    .controller('DemoAppController', function ($scope, $http, $window, persona) {
         $scope.onLogin = function () {
-            console.log('Logged In');
+            console.log('Logged In',persona.loggedUser);
+            $scope.loggedUser = persona.loggedUser;
         };
+
+        $scope.onLogout = function () {
+            console.log('Logged Out',persona.loggedUser);
+            $scope.loggedUser = null;
+        };
+
         $scope.checkLoggedIn = function () {
             $http.get('http://localhost:5001/me')
                 .then(function (response) {

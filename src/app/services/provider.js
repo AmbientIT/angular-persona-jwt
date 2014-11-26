@@ -45,8 +45,9 @@
             };
 
             service.logout = function () {
-                $window.localStorage.removeItem(options.tokenStorageKey);
                 service.loggedUser = null;
+                $window.localStorage.removeItem(options.tokenStorageKey);
+                console.log(service.loggedUser)
             };
 
             $window.navigator.id.watch({
