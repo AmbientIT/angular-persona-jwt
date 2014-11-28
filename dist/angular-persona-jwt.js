@@ -101,13 +101,18 @@
 
             var loginListeners = [];
             var logoutListeners = [];
+            var loginFailListeners = [];
 
-            service.addLoginListener = function (loginListener) {
-                loginListeners.push(loginListener);
+            service.addLoginListener = function (listener) {
+                loginListeners.push(listener);
             };
 
-            service.addLogoutListener = function (logoutListener) {
-                logoutListeners.push(logoutListener);
+            service.addLogoutListener = function (listener) {
+                logoutListeners.push(listener);
+            };
+
+            service.addLoginFailListener = function (listener) {
+                loginFailListeners.push(listener);
             };
 
             service.login = function (assertion) {
@@ -120,20 +125,23 @@
                     .success(function (data) {
                         service.loggedUser = data.user;
                         $window.localStorage.setItem(options.tokenStorageKey, data.token);
-                        angular.forEach(loginListeners, function (loginListener) {
-                            loginListener(data.user);
+                        angular.forEach(loginListeners, function (listener) {
+                            listener(data.user);
                         });
                     })
-                    .error(function (err) {
-                        console.log(err);
+                    .error(function (error) {
+                        console.log('Login failed :', error.message);
+                        angular.forEach(loginFailListeners, function (listener) {
+                            listener();
+                        });
                     });
             };
 
             service.logout = function () {
                 service.loggedUser = null;
                 $window.localStorage.removeItem(options.tokenStorageKey);
-                angular.forEach(logoutListeners, function (logoutListener) {
-                    logoutListener();
+                angular.forEach(logoutListeners, function (listener) {
+                    listener();
                 });
             };
 

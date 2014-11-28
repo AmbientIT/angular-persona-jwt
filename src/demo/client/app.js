@@ -33,9 +33,12 @@ angular.module('demo.app', [
 
     .run(function (persona) {
         persona.addLoginListener(function (loggedUser) {
-            console.log('Logged In (loginListener added to persona service)', loggedUser);
+            console.log('Logged In (listener added to persona service)', loggedUser);
         });
         persona.addLogoutListener(function () {
-            console.log('Logged Out (logoutListener added to persona service)');
+            console.log('Logged Out (listener added to persona service)');
+        });
+        persona.addLoginFailListener(function () {
+            console.log('Login Failed (listener added to persona service)');
         });
     });
