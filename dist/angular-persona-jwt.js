@@ -30,7 +30,7 @@
                 $scope.$watch(function () {
                     return persona;
                 }, function () {
-                    if (persona.loggedUser) {
+                    if (persona.loggedUser && $scope.onLogin) {
                         $scope.onLogin();
                     }
                 }, true);
