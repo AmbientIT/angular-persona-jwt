@@ -13,7 +13,7 @@
 (function (angular) {
     'use strict';
 
-    function personaLogin($window) {
+    function personaLogin($window,persona) {
         function login() {
             $window.navigator.id.request();
         }
@@ -21,28 +21,12 @@
         return {
             restrict: 'EA',
             scope: {
-                onlogin: '='
+                onLogin: '=',
+                onLogout: '='
             },
             transclude: true,
-            controller: function () {
+            controller: function ($scope,persona) {
                 this.login = login;
-            },
-            controllerAs: 'persona',
-            template: '<div ng-transclude ng-click="persona.login()"></div>'
-        };
-    }
-
-    function personaLogout($window) {
-        function logout() {
-            $window.navigator.id.logout();
-        }
-
-        return {
-            restrict: 'EA',
-            transclude: true,
-            scope: true,
-            controller: function ($scope, persona) {
-                this.logout = logout;
                 $scope.$watch(function () {
                     return persona;
                 }, function () {
@@ -50,6 +34,23 @@
                         $scope.onLogin();
                     }
                 }, true);
+            },
+            controllerAs: 'persona',
+            template: '<div ng-transclude ng-click="persona.login()"></div>'
+        };
+    }
+
+    function personaLogout($window,persona) {
+        function logout() {
+            $window.navigator.id.logout();
+        }
+
+        return {
+            restrict: 'EA',
+            transclude: true,
+            scope: {},
+            controller: function () {
+                this.logout = logout;
             },
             controllerAs: 'persona',
             template: '<div ng-transclude ng-click="persona.logout()"></div>'
@@ -98,22 +99,42 @@
         function Persona($http) {
             var service = {};
 
+            var loginListeners = [];
+            var logoutListeners = [];
+
+            service.addLoginListener = function (loginListener) {
+                loginListeners.push(loginListener);
+            };
+
+            service.addLogoutListener = function (logoutListener) {
+                logoutListeners.push(logoutListener);
+            };
+
             service.login = function (assertion) {
                 var param = {
                     assertion: assertion,
                     audience: options.audience
                 };
-                $http.post(options.baseUrl + '/login', param).success(function (data) {
-                    service.loggedUser = data.user;
-                    $window.localStorage.setItem(options.tokenStorageKey, data.token);
-                }).error(function (err) {
-                    console.log(err);
-                });
+                $http
+                    .post(options.baseUrl + '/login', param)
+                    .success(function (data) {
+                        service.loggedUser = data.user;
+                        $window.localStorage.setItem(options.tokenStorageKey, data.token);
+                        angular.forEach(loginListeners, function (loginListener) {
+                            loginListener(data.user);
+                        });
+                    })
+                    .error(function (err) {
+                        console.log(err);
+                    });
             };
 
             service.logout = function () {
-                $window.localStorage.removeItem(options.tokenStorageKey);
                 service.loggedUser = null;
+                $window.localStorage.removeItem(options.tokenStorageKey);
+                angular.forEach(logoutListeners, function (logoutListener) {
+                    logoutListener();
+                });
             };
 
             $window.navigator.id.watch({

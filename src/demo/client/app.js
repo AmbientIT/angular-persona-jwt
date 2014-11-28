@@ -4,12 +4,12 @@ angular.module('demo.app', [
 
     .controller('DemoAppController', function ($scope, $http, $window, persona) {
         $scope.onLogin = function () {
-            console.log('Logged In',persona.loggedUser);
+            console.log('Logged In (scope method passed as directive attribute)', persona.loggedUser);
             $scope.loggedUser = persona.loggedUser;
         };
 
         $scope.onLogout = function () {
-            console.log('Logged Out',persona.loggedUser);
+            console.log('Logged Out (scope method passed as directive attribute)', persona.loggedUser);
             $scope.loggedUser = null;
         };
 
@@ -28,5 +28,14 @@ angular.module('demo.app', [
         personaProvider.config({
             baseUrl: 'http://localhost:5001',
             tokenStorageKey: 'demo-token'
+        });
+    })
+
+    .run(function (persona) {
+        persona.addLoginListener(function (loggedUser) {
+            console.log('Logged In (loginListener added to persona service)', loggedUser);
+        });
+        persona.addLogoutListener(function () {
+            console.log('Logged Out (logoutListener added to persona service)');
         });
     });
