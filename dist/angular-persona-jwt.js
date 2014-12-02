@@ -13,7 +13,7 @@
 (function (angular) {
     'use strict';
 
-    function personaLogin($window) {
+    function personaLogin($window,persona) {
         function login() {
             $window.navigator.id.request();
         }
@@ -21,18 +21,26 @@
         return {
             restrict: 'EA',
             scope: {
-                onlogin: '='
+                onLogin: '=',
+                onLogout: '='
             },
             transclude: true,
-            controller: function () {
+            controller: function ($scope,persona) {
                 this.login = login;
+                $scope.$watch(function () {
+                    return persona;
+                }, function () {
+                    if (persona.loggedUser && $scope.onLogin) {
+                        $scope.onLogin();
+                    }
+                }, true);
             },
             controllerAs: 'persona',
             template: '<div ng-transclude ng-click="persona.login()"></div>'
         };
     }
 
-    function personaLogout($window) {
+    function personaLogout($window,persona) {
         function logout() {
             $window.navigator.id.logout();
         }
@@ -40,16 +48,9 @@
         return {
             restrict: 'EA',
             transclude: true,
-            scope: true,
-            controller: function ($scope, persona) {
+            scope: {},
+            controller: function () {
                 this.logout = logout;
-                $scope.$watch(function () {
-                    return persona.loggedInUser;
-                }, function (value) {
-                    if (value) {
-                        $scope.onLogin();
-                    }
-                });
             },
             controllerAs: 'persona',
             template: '<div ng-transclude ng-click="persona.logout()"></div>'
@@ -74,14 +75,14 @@
             options = {
                 baseUrl: 'localhost',
                 audience: $window.location.href,
-                tokenName: 'token'
+                tokenStorageKey: 'angular-persona-jwt-token'
             };
         this.config = function (data) {
             options = angular.extend(options, data);
             $httpProvider.interceptors.push(function ($q) {
                 return {
                     request: function (httpConfig) {
-                        var token = $window.localStorage.getItem(options.tokenName);
+                        var token = $window.localStorage.getItem(options.tokenStorageKey);
                         if (token) {
                             httpConfig.headers.Authorization = 'Bearer ' + token;
                         }
@@ -98,22 +99,50 @@
         function Persona($http) {
             var service = {};
 
+            var loginListeners = [];
+            var logoutListeners = [];
+            var loginFailListeners = [];
+
+            service.addLoginListener = function (listener) {
+                loginListeners.push(listener);
+            };
+
+            service.addLogoutListener = function (listener) {
+                logoutListeners.push(listener);
+            };
+
+            service.addLoginFailListener = function (listener) {
+                loginFailListeners.push(listener);
+            };
+
             service.login = function (assertion) {
                 var param = {
                     assertion: assertion,
                     audience: options.audience
                 };
-                $http.post(options.baseUrl + '/login', param).success(function (data) {
-                    service.loggedUser = data.user;
-                    $window.localStorage.setItem(options.tokenName, data.token);
-                }).error(function (err) {
-                    console.log(err);
-                });
+                $http
+                    .post(options.baseUrl + '/login', param)
+                    .success(function (data) {
+                        service.loggedUser = data.user;
+                        $window.localStorage.setItem(options.tokenStorageKey, data.token);
+                        angular.forEach(loginListeners, function (listener) {
+                            listener(data.user);
+                        });
+                    })
+                    .error(function (error) {
+                        console.log('Login failed :', error.message);
+                        angular.forEach(loginFailListeners, function (listener) {
+                            listener();
+                        });
+                    });
             };
 
             service.logout = function () {
-                $window.localStorage.removeItem(options.tokenName);
                 service.loggedUser = null;
+                $window.localStorage.removeItem(options.tokenStorageKey);
+                angular.forEach(logoutListeners, function (listener) {
+                    listener();
+                });
             };
 
             $window.navigator.id.watch({

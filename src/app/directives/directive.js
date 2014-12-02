@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
 
-    function personaLogin($window) {
+    function personaLogin($window,persona) {
         function login() {
             $window.navigator.id.request();
         }
@@ -9,18 +9,26 @@
         return {
             restrict: 'EA',
             scope: {
-                onlogin: '='
+                onLogin: '=',
+                onLogout: '='
             },
             transclude: true,
-            controller: function () {
+            controller: function ($scope,persona) {
                 this.login = login;
+                $scope.$watch(function () {
+                    return persona;
+                }, function () {
+                    if (persona.loggedUser && $scope.onLogin) {
+                        $scope.onLogin();
+                    }
+                }, true);
             },
             controllerAs: 'persona',
             template: '<div ng-transclude ng-click="persona.login()"></div>'
         };
     }
 
-    function personaLogout($window) {
+    function personaLogout($window,persona) {
         function logout() {
             $window.navigator.id.logout();
         }
@@ -28,16 +36,9 @@
         return {
             restrict: 'EA',
             transclude: true,
-            scope: true,
-            controller: function ($scope, persona) {
+            scope: {},
+            controller: function () {
                 this.logout = logout;
-                $scope.$watch(function () {
-                    return persona.loggedInUser;
-                }, function (value) {
-                    if (value) {
-                        $scope.onLogin();
-                    }
-                });
             },
             controllerAs: 'persona',
             template: '<div ng-transclude ng-click="persona.logout()"></div>'

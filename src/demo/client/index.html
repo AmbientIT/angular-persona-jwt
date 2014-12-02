@@ -2,33 +2,35 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Code Assesser Directive Demo</title>
+    <title>angular-persona-jwt Demo</title>
     <base href="/"/>
     <link rel="stylesheet" href="../../vendor/angular-material/angular-material.css"/>
     <link rel="stylesheet" href="../../vendor/angular-material/themes/default-theme.css"/>
+
     <script src="https://login.persona.org/include.js"></script>
+
+    <script src="../../vendor/hammerjs/hammer.js"></script>
+    <script src="../../vendor/angular/angular.js"></script>
+    <script src="../../vendor/angular-animate/angular-animate.js"></script>
+    <script src="../../vendor/angular-aria/angular-aria.js"></script>
+    <script src="../../vendor/angular-material/angular-material.js"></script>
+
+    <script src="../../demo/client/app.js"></script>
+    <script src="../../build/all-source.js"></script>
 </head>
 
 <body ng-app="demo.app" ng-controller="DemoAppController">
 
 <h1>Login</h1>
 
-<persona-login on-login="onLogin">
+<persona-login on-login="onLogin" on-logout="onLogout" ng-show="!loggedUser">
     <md-button class="md-button md-deep-orange-theme">Login</md-button>
 </persona-login>
-<persona-logout>
+<persona-logout ng-if="loggedUser" ng-click="onLogout()">
     <md-button class="md-button md-deep-red-theme">Logout</md-button>
 </persona-logout>
 
-<script src="../../vendor/hammerjs/hammer.js"></script>
-
-<script src="../../vendor/angular/angular.js"></script>
-<script src="../../vendor/angular-animate/angular-animate.js"></script>
-<script src="../../vendor/angular-aria/angular-aria.js"></script>
-<script src="../../vendor/angular-material/angular-material.js"></script>
-
-<script src="demo/client/app.js"></script>
-<script src="../../build/all-source.js"></script>
+<md-button ng-click="checkLoggedIn()">Check Logged In</md-button>
 
 </body>
 </html>
