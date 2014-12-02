@@ -11,7 +11,17 @@
     "gulp-util": "*",
     "gulp-uglify": "*",
     "gulp-sourcemaps": "*",
-    "gulp-ng-annotate" : "*",
-    "gulp-angular-templatecache" : "*"
+    "gulp-ng-annotate": "*",
+    "connect-livereload": "*",
+    "gulp-livereload": "*",
+    "express": "*",
+    "tiny-lr": "*",
+    "cors": "*",
+    "body-parser": "~1.8.1",
+    "q": "*",
+    "q-io": "*",
+    "gulp-nodemon": "*",
+    "jwt-simple": "*",
+    "moment": "*"
   }
 }

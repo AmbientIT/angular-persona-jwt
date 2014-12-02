@@ -1,10 +1,9 @@
 (function (angular) {
     'use strict';
 
-    function personaProvider($windowProvider, $httpProvider, $qProvider) {
+    function personaProvider($windowProvider, $httpProvider) {
 
         var $window = $windowProvider.$get(),
-            $q = $qProvider.$get(),
             options = {
                 baseUrl: 'localhost',
                 audience: $window.location.href,
@@ -12,7 +11,7 @@
             };
         this.config = function (data) {
             options = angular.extend(options, data);
-            $httpProvider.interceptors.push(function () {
+            $httpProvider.interceptors.push(function ($q) {
                 return {
                     request: function (httpConfig) {
                         var token = $window.localStorage.getItem(options.tokenName);
@@ -31,9 +30,6 @@
 
         function Persona($http) {
             var service = {};
-
-            service.loggedUser = {};
-
 
             service.login = function (assertion) {
                 var param = {
