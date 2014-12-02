@@ -19,7 +19,7 @@ app.post('/login', function (request, response) {
         body: [
             JSON.stringify({
                 assertion: request.body.assertion,
-                audience: 'http://localhost:5000'
+                audience: 'http://localhost:5200'
             })
         ],
         headers: {

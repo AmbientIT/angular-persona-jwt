@@ -1,13 +1,31 @@
 {
-  "name": "code-grader-client",
+  "name": "angular-persona-jwt",
+  "description" : "angularJs module to authenticate an app with Mozilla Persona",
+  "author": {
+    "name": "Charles Jacquin",
+    "email": "charles.jacquin@autistici.org"
+  },
+  "contributors": [
+    {
+      "name": "Mickael Couzic",
+      "email": ""
+    }
+  ],
   "version": "0.0.1",
-  "dependencies": {},
+  "homepage": "https://github.com/Charl---/angular-persona-jwt",
+  "license": "MIT",
+  "bugs": "https://github.com/Charl---/angular-persona-jwt/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Charl---/angular-persona-jwt.git"
+  },
   "devDependencies": {
     "gulp": "*",
     "del": "*",
     "run-sequence": "*",
-    "gulp-concat": "*",
+    "gulp-concat-util": "*",
     "gulp-jshint": "*",
+    "jshint-stylish": "^1.0.0",
     "gulp-util": "*",
     "gulp-uglify": "*",
     "gulp-sourcemaps": "*",
@@ -22,6 +40,7 @@
     "q-io": "*",
     "gulp-nodemon": "*",
     "jwt-simple": "*",
-    "moment": "*"
+    "moment": "*",
+    "gulp-ngdocs": "*"
   }
 }

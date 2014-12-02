@@ -1,11 +1,6 @@
-(function (angular) {
-    'use strict';
+'use strict';
 
-    angular.module('angular-persona-jwt', [
-        'angular-persona-jwt.services',
-        'angular-persona-jwt.directives'
-    ]);
-
-})(angular);
-
-
+angular.module('angular-persona-jwt', [
+    'angular-persona-jwt.services',
+    'angular-persona-jwt.directives'
+]);
