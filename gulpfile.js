@@ -123,13 +123,17 @@ gulp.task('cleanDistFolder', function (cb) {
 
 gulp.task('distJs', function () {
     gulp.src([pathToJsSource])
-        .pipe(concat('angular-persona-jwt.js'))
+        .pipe(concat('angular-persona-jwt.js', {process: function(src) { return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+        .pipe(concat.header(header))
+        .pipe(concat.footer(footer))
         .pipe(gulp.dest('dist'));
 });
 
 gulp.task('distMinifiedJs', function () {
     gulp.src([pathToJsSource])
-        .pipe(concat('angular-persona-jwt.min.js'))
+        .pipe(concat('angular-persona-jwt.min.js', {process: function(src) { return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+        .pipe(concat.header(header))
+        .pipe(concat.footer(footer))
         .pipe(annotate())
         .pipe(uglify())
         .pipe(gulp.dest('dist'));
