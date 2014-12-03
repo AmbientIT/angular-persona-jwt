@@ -11,7 +11,7 @@
  * when clicking show the Mozilla pop-up.
  *
  * @example
- <example module="rfx">
+ <example module="angular-persona-jwt">
  <file name="index.html">
  <persona-login>
  <button></md-button>

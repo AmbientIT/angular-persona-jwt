@@ -38,16 +38,17 @@ function personaProvider($windowProvider,$httpProvider) {
             baseUrl: 'localhost',
             audience: $window.location.href,
             tokenStorageKey: 'angular-persona-jwt-token'
-        };
+        },
+        service = {};
 
     /**
-     * @ngdoc method
+     * @ngdoc function
      * @name personaProvider#config
      * @description configuration method, and add the httpInterceptor wich add the token on every http request
      * @param {object=} object with 3 attribute : baseUrl (your webservice baseUrl),
      * audience (your application url) and tokenStorageKey (the name of the locaStorage attribut where your auth token is stored).
      */
-    this.config = function personaConfig(data){
+    service.config = function (data){
         options = angular.extend(options, data);
         $httpProvider.interceptors.push(function ($q) {
             return {
@@ -65,7 +66,7 @@ function personaProvider($windowProvider,$httpProvider) {
         });
     };
 
-    this.$get = function Persona($http,$q,$document){
+    service.$get = function Persona($http,$q,$document){
         var self = this;
 
         var loginListeners = [];
@@ -73,8 +74,7 @@ function personaProvider($windowProvider,$httpProvider) {
         var loginFailListeners = [];
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#addLoginListener
          * @description add a login listener in an array of functions,this listener will notify you when user login
          */
@@ -83,8 +83,7 @@ function personaProvider($windowProvider,$httpProvider) {
         };
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#addLogoutListener
          * @description add a logout listener in an array of functions, this listener will notify you when user logout
          */
@@ -93,8 +92,7 @@ function personaProvider($windowProvider,$httpProvider) {
         };
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#addLoginFailListener
          * @description add a listener in an array of functions this listener will notify you when someting goes wrong
          */
@@ -103,8 +101,7 @@ function personaProvider($windowProvider,$httpProvider) {
         };
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#login
          * @description login callback for the navigator.id api, executed just after the pop up hide.
          * send a request to the webservice configured in the previous config function, store the token in the
@@ -132,8 +129,7 @@ function personaProvider($windowProvider,$httpProvider) {
                 });
         };
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#logout
          * @description logout callback for the navigator.id api, clean the loggedUser attribute and the localStorage,
          * and call all the logout listeners
@@ -148,8 +144,7 @@ function personaProvider($windowProvider,$httpProvider) {
         };
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#init
          * @description get the mozilla persona librairie, add it to the dom, and start the process with navigator.id
          * @return {Promise=} resolve when the mozilla librairie is loaded
@@ -172,9 +167,9 @@ function personaProvider($windowProvider,$httpProvider) {
             };
             return deferred.promise;
         };
-
-        return self;
+        return this;
     };
+    return service;
 }
 
 angular.module('angular-persona-jwt.services', [])

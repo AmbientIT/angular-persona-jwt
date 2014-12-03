@@ -21,7 +21,7 @@ angular.module('angular-persona-jwt', [
  * when clicking show the Mozilla pop-up.
  *
  * @example
- <example module="rfx">
+ <example module="angular-persona-jwt">
  <file name="index.html">
  <persona-login>
  <button></md-button>
@@ -133,7 +133,8 @@ function personaProvider($windowProvider,$httpProvider) {
             baseUrl: 'localhost',
             audience: $window.location.href,
             tokenStorageKey: 'angular-persona-jwt-token'
-        };
+        },
+        service = {};
 
     /**
      * @ngdoc method
@@ -142,7 +143,7 @@ function personaProvider($windowProvider,$httpProvider) {
      * @param {object=} object with 3 attribute : baseUrl (your webservice baseUrl),
      * audience (your application url) and tokenStorageKey (the name of the locaStorage attribut where your auth token is stored).
      */
-    this.config = function personaConfig(data){
+    service.config = function (data){
         options = angular.extend(options, data);
         $httpProvider.interceptors.push(function ($q) {
             return {
@@ -160,7 +161,7 @@ function personaProvider($windowProvider,$httpProvider) {
         });
     };
 
-    this.$get = function Persona($http,$q,$document){
+    service.$get = function Persona($http,$q,$document){
         var self = this;
 
         var loginListeners = [];
@@ -267,9 +268,9 @@ function personaProvider($windowProvider,$httpProvider) {
             };
             return deferred.promise;
         };
-
-        return self;
+        return this;
     };
+    return service;
 }
 
 angular.module('angular-persona-jwt.services', [])

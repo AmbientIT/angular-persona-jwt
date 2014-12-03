@@ -157,4 +157,5 @@ gulp.task('docs',function(){
         res.sendFile('index.html', {root: 'docs'});
     });
     docsServer.listen('5000');
+    console.log('documentation is now available at localhost:5000/api')
 });
