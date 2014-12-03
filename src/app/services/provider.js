@@ -31,6 +31,7 @@
  * use the config method of the provider to configure the way it will help to authenticate.
  *
  */
+/* @ngInject */
 function personaProvider($windowProvider,$httpProvider) {
 
     var $window = $windowProvider.$get(),

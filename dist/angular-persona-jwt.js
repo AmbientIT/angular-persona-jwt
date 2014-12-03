@@ -41,7 +41,7 @@ function personaLogin($window, persona) {
             onLogout: '='
         },
         transclude: true,
-        controller: function ($scope, persona) {
+        controller: ["$scope", "persona", function ($scope, persona) {
             this.login = login;
             $scope.$watch(function () {
                 return persona;
@@ -50,11 +50,12 @@ function personaLogin($window, persona) {
                     $scope.onLogin();
                 }
             }, true);
-        },
+        }],
         controllerAs: 'persona',
         template: '<div ng-transclude ng-click="persona.login()"></div>'
     };
 }
+personaLogin.$inject = ["$window", "persona"];
 
 /**
  * @ngdoc directive
@@ -91,6 +92,7 @@ function personaLogout($window, persona) {
         template: '<div ng-transclude ng-click="persona.logout()"></div>'
     };
 }
+personaLogout.$inject = ["$window", "persona"];
 
 angular.module('angular-persona-jwt.directives', [])
     .directive('personaLogin', personaLogin)
@@ -126,6 +128,7 @@ angular.module('angular-persona-jwt.directives', [])
  * use the config method of the provider to configure the way it will help to authenticate.
  *
  */
+/* @ngInject */
 function personaProvider($windowProvider,$httpProvider) {
 
     var $window = $windowProvider.$get(),
@@ -137,7 +140,7 @@ function personaProvider($windowProvider,$httpProvider) {
         service = {};
 
     /**
-     * @ngdoc method
+     * @ngdoc function
      * @name personaProvider#config
      * @description configuration method, and add the httpInterceptor wich add the token on every http request
      * @param {object=} object with 3 attribute : baseUrl (your webservice baseUrl),
@@ -145,7 +148,7 @@ function personaProvider($windowProvider,$httpProvider) {
      */
     service.config = function (data){
         options = angular.extend(options, data);
-        $httpProvider.interceptors.push(function ($q) {
+        $httpProvider.interceptors.push(["$q", function ($q) {
             return {
                 request: function (httpConfig) {
                     var token = $window.localStorage.getItem(options.tokenStorageKey);
@@ -158,7 +161,7 @@ function personaProvider($windowProvider,$httpProvider) {
                     return $q.reject(response);
                 }
             };
-        });
+        }]);
     };
 
     service.$get = function Persona($http,$q,$document){
@@ -169,8 +172,7 @@ function personaProvider($windowProvider,$httpProvider) {
         var loginFailListeners = [];
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#addLoginListener
          * @description add a login listener in an array of functions,this listener will notify you when user login
          */
@@ -179,8 +181,7 @@ function personaProvider($windowProvider,$httpProvider) {
         };
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#addLogoutListener
          * @description add a logout listener in an array of functions, this listener will notify you when user logout
          */
@@ -189,8 +190,7 @@ function personaProvider($windowProvider,$httpProvider) {
         };
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#addLoginFailListener
          * @description add a listener in an array of functions this listener will notify you when someting goes wrong
          */
@@ -199,8 +199,7 @@ function personaProvider($windowProvider,$httpProvider) {
         };
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#login
          * @description login callback for the navigator.id api, executed just after the pop up hide.
          * send a request to the webservice configured in the previous config function, store the token in the
@@ -228,8 +227,7 @@ function personaProvider($windowProvider,$httpProvider) {
                 });
         };
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#logout
          * @description logout callback for the navigator.id api, clean the loggedUser attribute and the localStorage,
          * and call all the logout listeners
@@ -244,8 +242,7 @@ function personaProvider($windowProvider,$httpProvider) {
         };
 
         /**
-         * @ngdoc method
-         * @kind function
+         * @ngdoc function
          * @name persona#init
          * @description get the mozilla persona librairie, add it to the dom, and start the process with navigator.id
          * @return {Promise=} resolve when the mozilla librairie is loaded
@@ -272,6 +269,7 @@ function personaProvider($windowProvider,$httpProvider) {
     };
     return service;
 }
+personaProvider.$inject = ["$windowProvider", "$httpProvider"];
 
 angular.module('angular-persona-jwt.services', [])
     .provider('persona', personaProvider);
