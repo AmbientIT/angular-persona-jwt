@@ -19,7 +19,7 @@ var livereloadport = 35729,
     serverport = 5200,
     header = ['/**',
         ' * '+pkg.name+' - '+pkg.description,
-        ' * @version v '+ pkg.version,
+        ' * @version v'+ pkg.version,
         ' * @link '+pkg.homepage,
         ' * @license '+pkg.license,
         ' */',
@@ -67,7 +67,7 @@ gulp.task('concatJs', function () {
         .pipe(concat('all-source.js', {process: function(src) { return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
         .pipe(concat.header(header))
         .pipe(concat.footer(footer))
-        .pipe(concat())
+        .pipe(annotate())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('src/build'))
         .pipe(refresh(lrserver));

@@ -22,7 +22,7 @@
                 });
         };
     }
-
+    DemoAppController.$inject = ['$scope', '$http', '$window', 'persona', '$log'];
 
     function demoConfig(personaProvider) {
         personaProvider.config({
@@ -30,7 +30,7 @@
             tokenStorageKey: 'demo-token'
         });
     }
-
+    demoConfig.$inject = ["personaProvider"];
 
 
     function demoRun(persona, $log) {
@@ -47,6 +47,7 @@
                 });
             })
     }
+    demoRun.$inject = ['persona', '$log'];
 
     angular.module('demo.app', [
         'angular-persona-jwt'
