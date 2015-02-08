@@ -7,8 +7,8 @@
   },
   "contributors": [
     {
-      "name": "Mickael Couzic",
-      "email": ""
+      "name": "Mikael Couzic",
+      "email": "mikael.couzic@gmail.com"
     }
   ],
   "version": "0.0.1",
@@ -20,27 +20,31 @@
     "url": "https://github.com/Charl---/angular-persona-jwt.git"
   },
   "devDependencies": {
-    "gulp": "*",
+    "body-parser": "~1.8.1",
+    "connect-livereload": "*",
+    "cors": "*",
     "del": "*",
-    "run-sequence": "*",
+    "express": "*",
+    "gulp": "*",
     "gulp-concat-util": "*",
     "gulp-jshint": "*",
-    "jshint-stylish": "^1.0.0",
-    "gulp-util": "*",
-    "gulp-uglify": "*",
-    "gulp-sourcemaps": "*",
-    "gulp-ng-annotate": "*",
-    "connect-livereload": "*",
     "gulp-livereload": "*",
-    "express": "*",
-    "tiny-lr": "*",
-    "cors": "*",
-    "body-parser": "~1.8.1",
+    "gulp-ng-annotate": "*",
+    "gulp-ngdocs": "*",
+    "gulp-nodemon": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-uglify": "*",
+    "gulp-util": "*",
+    "jasmine-core": "2.1.3",
+    "jshint-stylish": "^1.0.0",
+    "jwt-simple": "*",
+    "karma": "0.12.31",
+    "karma-chrome-launcher": "0.1.7",
+    "karma-jasmine": "0.3.5",
+    "moment": "*",
     "q": "*",
     "q-io": "*",
-    "gulp-nodemon": "*",
-    "jwt-simple": "*",
-    "moment": "*",
-    "gulp-ngdocs": "*"
+    "run-sequence": "*",
+    "tiny-lr": "*"
   }
 }

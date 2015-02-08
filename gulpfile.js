@@ -1,3 +1,5 @@
+var path = require('path');
+
 var gulp = require('gulp'),
     concat = require('gulp-concat-util'),
     jshint = require('gulp-jshint'),
@@ -12,16 +14,18 @@ var gulp = require('gulp'),
     livereload = require('connect-livereload'),
     nodemon = require('gulp-nodemon'),
     ngDocs = require('gulp-ngdocs'),
-    pkg = require('./package.json');
+    pkg = require('./package.json'),
+    karma = require('karma').server;
 
+var paths = require('./config/paths.config');
 
 var livereloadport = 35729,
-    serverport = 5200,
+    serverport = 5000,
     header = ['/**',
-        ' * '+pkg.name+' - '+pkg.description,
-        ' * @version v'+ pkg.version,
-        ' * @link '+pkg.homepage,
-        ' * @license '+pkg.license,
+        ' * ' + pkg.name + ' - ' + pkg.description,
+        ' * @version v' + pkg.version,
+        ' * @link ' + pkg.homepage,
+        ' * @license ' + pkg.license,
         ' */',
         '(function(angular) {\'use strict\';\n'
     ].join('\n'),
@@ -64,7 +68,11 @@ gulp.task('buildDev', [
 gulp.task('concatJs', function () {
     gulp.src(pathToJsSource)
         .pipe(sourcemaps.init())
-        .pipe(concat('all-source.js', {process: function(src) { return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+        .pipe(concat('all-source.js', {
+            process: function (src) {
+                return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+            }
+        }))
         .pipe(concat.header(header))
         .pipe(concat.footer(footer))
         .pipe(annotate())
@@ -123,7 +131,11 @@ gulp.task('cleanDistFolder', function (cb) {
 
 gulp.task('distJs', function () {
     gulp.src([pathToJsSource])
-        .pipe(concat('angular-persona-jwt.js', {process: function(src) { return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+        .pipe(concat('angular-persona-jwt.js', {
+            process: function (src) {
+                return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+            }
+        }))
         .pipe(annotate())
         .pipe(concat.header(header))
         .pipe(concat.footer(footer))
@@ -132,7 +144,11 @@ gulp.task('distJs', function () {
 
 gulp.task('distMinifiedJs', function () {
     gulp.src([pathToJsSource])
-        .pipe(concat('angular-persona-jwt.min.js', {process: function(src) { return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+        .pipe(concat('angular-persona-jwt.min.js', {
+            process: function (src) {
+                return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+            }
+        }))
         .pipe(annotate())
         .pipe(uglify())
         .pipe(concat.header(header))
@@ -140,7 +156,7 @@ gulp.task('distMinifiedJs', function () {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('docs',function(){
+gulp.task('docs', function () {
     var options = {
         scripts: [pathToJsSource],
         html5Mode: true,
@@ -159,4 +175,26 @@ gulp.task('docs',function(){
     });
     docsServer.listen('5000');
     console.log('documentation is now available at localhost:5000/api')
+});
+
+
+///////////////////
+// UNIT TESTING //
+/////////////////
+
+var pathToKarmaConfigFile = path.resolve(paths.karmaConfigFile);
+
+gulp.task('unit', function (done) {
+    karma.start({
+        configFile: pathToKarmaConfigFile,
+        singleRun: true,
+        autoWatch: false
+    }, done);
+});
+
+gulp.task('tdd', function (done) {
+    karma.start({
+        configFile: pathToKarmaConfigFile
+    }, done);
+
 });
