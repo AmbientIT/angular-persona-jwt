@@ -26,7 +26,8 @@ describe('Persona', function () {
         $log = _$log_;
         $http = _$http_;
         personaNavigatorMock.logout = function () {
-            return $q(function () {
+            return $q(function (resolve) {
+                resolve();
             });
         };
         spyOn(personaNavigatorMock, 'logout').and.callThrough();
