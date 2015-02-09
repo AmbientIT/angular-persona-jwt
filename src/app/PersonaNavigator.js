@@ -1,24 +1,24 @@
 angular.module('angular-persona-jwt.navigator', [])
 
-    .service('personaNavigator', function PersonaNavigator($window, $q, $rootScope) {
+    .service('personaNavigator', function PersonaNavigator($window, $q) {
 
         var resolveLoginPromise = null;
         var resolveLogoutPromise = null;
 
         function onLogin(assertion) {
-            resolveLoginPromise(assertion);
-            //$rootScope.$digest();
+            if (resolveLoginPromise)
+                resolveLoginPromise(assertion);
         }
 
         function onLogout() {
-            resolveLogoutPromise();
-            //$rootScope.$digest();
+            if (resolveLogoutPromise)
+                resolveLogoutPromise();
         }
 
         $window.navigator.id.watch({
             loggedInUser: null,
-            onLogin: onLogin,
-            onLogout: onLogout
+            onlogin: onLogin,
+            onlogout: onLogout
         });
 
         this.requestLogin = function () {

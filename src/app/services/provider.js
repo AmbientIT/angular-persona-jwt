@@ -1,6 +1,3 @@
-'use strict';
-
-
 /**
  * @ngdoc service
  * @name persona

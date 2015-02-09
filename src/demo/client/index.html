@@ -4,8 +4,12 @@
     <meta charset="utf-8">
     <title>angular-persona-jwt Demo</title>
     <base href="/"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
     <link rel="stylesheet" href="../../vendor/angular-material/angular-material.css"/>
-    <link rel="stylesheet" href="../../vendor/angular-material/themes/default-theme.css"/>
+    <link rel="stylesheet" href="../../vendor/angular-material/themes/blue-theme.css"/>
+
+    <script src="https://login.persona.org/include.js"></script>
 
     <script src="../../vendor/hammerjs/hammer.js"></script>
     <script src="../../vendor/angular/angular.js"></script>
@@ -17,16 +21,21 @@
     <script src="../../build/all-source.js"></script>
 </head>
 
-<body ng-app="demo.app" ng-controller="DemoAppController" ng-strict-di>
+<body ng-app="demo.app" ng-controller="DemoAppController">
 
 <h1>Login</h1>
 
-<persona-login on-login="onLogin" on-logout="onLogout" ng-show="!loggedUser">
-    <md-button class="md-button md-deep-orange-theme">Login</md-button>
-</persona-login>
-<persona-logout ng-if="loggedUser" ng-click="onLogout()">
-    <md-button class="md-button md-deep-red-theme">Logout</md-button>
-</persona-logout>
+<md-button ng-click="login()"
+           ng-if="!loggedUser"
+           class="md-button md-deep-orange-theme">
+    Login
+</md-button>
+
+<md-button ng-if="loggedUser"
+           ng-click="logout()"
+           class="md-button md-deep-red-theme">
+    Logout
+</md-button>
 
 <md-button ng-click="checkLoggedIn()">Check Logged In</md-button>
 

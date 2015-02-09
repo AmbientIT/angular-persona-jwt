@@ -26,17 +26,14 @@ var livereloadport = 35729,
         ' * @version v' + pkg.version,
         ' * @link ' + pkg.homepage,
         ' * @license ' + pkg.license,
-        ' */',
-        '(function(angular) {\'use strict\';\n'
-    ].join('\n'),
-    footer = '\n})(angular);\n';
+        ' */'
+    ].join('\n');
 
 // PATHS
-var pathToJsSource = 'src/app/**/*.js',
+var pathToJsSource = ['src/app/**/*.js', '!src/app/**/*.spec.js'],
     pathToDemoClientJsSource = 'src/demo/client/**/*.js',
     pathToDemoClientIndexFile = 'src/demo/client/index.html',
     pathToDemoServerSource = 'src/demo/server/**/*.js';
-
 
 // DEV STATIC SERVER
 var staticDevServer = express();
@@ -68,13 +65,8 @@ gulp.task('buildDev', [
 gulp.task('concatJs', function () {
     gulp.src(pathToJsSource)
         .pipe(sourcemaps.init())
-        .pipe(concat('all-source.js', {
-            process: function (src) {
-                return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
-            }
-        }))
+        .pipe(concat('all-source.js'))
         .pipe(concat.header(header))
-        .pipe(concat.footer(footer))
         .pipe(annotate())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('src/build'))

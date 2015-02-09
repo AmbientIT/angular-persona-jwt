@@ -1,15 +1,26 @@
-'use strict';
+angular.module('demo.app', [
+    'angular-persona-jwt'
+])
 
-(function(angular){
-    function DemoAppController($scope, $http, $window, persona, $log) {
-        $scope.onLogin = function () {
-            $log.info('Logged In (scope method passed as directive attribute)', persona.loggedUser);
-            $scope.loggedUser = persona.loggedUser;
+    .config(function demoConfig(personaProvider) {
+        personaProvider.config({
+            authBackendUrl: 'http://localhost:5001'
+        });
+    })
+
+    .controller('DemoAppController', function DemoAppController($scope, $http, $window, $log, persona) {
+        $scope.login = function () {
+            persona.login().then(function (loggedUser) {
+                $scope.loggedUser = loggedUser;
+                $log.info('Logged In', loggedUser);
+            })
         };
 
-        $scope.onLogout = function () {
-            $log.info('Logged Out (scope method passed as directive attribute)', persona.loggedUser);
-            $scope.loggedUser = null;
+        $scope.logout = function () {
+            persona.logout().then(function () {
+                $scope.loggedUser = null;
+                $log.info('Logged Out');
+            });
         };
 
         $scope.checkLoggedIn = function () {
@@ -21,39 +32,4 @@
                     $window.alert('Error ' + response.status + ' : ' + response.data.message);
                 });
         };
-    }
-    DemoAppController.$inject = ['$scope', '$http', '$window', 'persona', '$log'];
-
-    function demoConfig(personaProvider) {
-        personaProvider.config({
-            baseUrl: 'http://localhost:5001',
-            tokenStorageKey: 'demo-token'
-        });
-    }
-    demoConfig.$inject = ["personaProvider"];
-
-
-    function demoRun(persona, $log) {
-        persona.init()
-            .then(function(){
-                persona.addLoginListener(function (loggedUser) {
-                    $log.info('Logged In (listener added to persona service)', loggedUser);
-                });
-                persona.addLogoutListener(function () {
-                    $log.info('Logged Out (listener added to persona service)');
-                });
-                persona.addLoginFailListener(function () {
-                    $log.error('Login Failed (listener added to persona service)');
-                });
-            })
-    }
-    demoRun.$inject = ['persona', '$log'];
-
-    angular.module('demo.app', [
-        'angular-persona-jwt'
-    ])
-        .config(demoConfig)
-        .run(demoRun)
-        .controller('DemoAppController', DemoAppController)
-
-})(angular);
+    });

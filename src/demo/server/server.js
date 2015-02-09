@@ -12,7 +12,7 @@ var app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post('/login', function (request, response) {
+app.post('/auth/login', function (request, response) {
     var options = {
         url: 'https://verifier.login.persona.org/verify',
         method: 'POST',
@@ -32,7 +32,7 @@ app.post('/login', function (request, response) {
                 var personaAuthData = JSON.parse(body);
                 if (personaAuthData.status === 'okay') {
                     response.json({
-                        user: {email: personaAuthData.email},
+                        loggedUser: {email: personaAuthData.email},
                         token: createToken(personaAuthData)
                     });
                 } else {
