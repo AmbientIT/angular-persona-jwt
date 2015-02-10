@@ -3,6 +3,9 @@ angular.module('angular-persona-jwt', [
 ])
     .provider('persona', function personaProvider() {
 
+        const TOKEN_STORAGE_KEY = 'angular-persona-jwt-token';
+        const LOGGED_USER_STORAGE_KEY = 'angular-persona-jwt-logged-user';
+
         var options = {};
 
         return {
@@ -15,12 +18,13 @@ angular.module('angular-persona-jwt', [
                 var persona = this;
 
                 persona.login = function () {
-                    return personaNavigator.requestLogin()
+                    return personaNavigator.login()
                         .then(function validateAssertion(assertion) {
                             var serverUrl = options.authBackendUrl ? options.authBackendUrl : '';
                             return $http.post(serverUrl + '/auth/login', {assertion: assertion});
                         })
                         .catch(function handleInvalidAssertionError(response) {
+                            personaNavigator.logout();
                             if (response.status === 401)
                                 return $q.reject({message: 'invalid assertion'});
                             else
@@ -34,15 +38,21 @@ angular.module('angular-persona-jwt', [
                             }
                             return response.data;
                         })
-                        .then(function storeTokenInLocalStorage(data) {
-                            $window.localStorage.setItem('angular-persona-jwt-token', data.token);
+                        .then(function storeInLocalStorage(data) {
+                            $window.localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+                            $window.localStorage.setItem(LOGGED_USER_STORAGE_KEY, data.loggedUser);
                             return data.loggedUser;
                         });
                 };
 
                 persona.logout = function () {
-                    $window.localStorage.removeItem('angular-persona-jwt-token');
-                    return personaNavigator.logout();
+                    $window.localStorage.removeItem(TOKEN_STORAGE_KEY);
+                    $window.localStorage.removeItem(LOGGED_USER_STORAGE_KEY);
+                    personaNavigator.logout();
+                };
+
+                persona.getLoggedUser = function () {
+                    return $window.localStorage.getItem(LOGGED_USER_STORAGE_KEY);
                 };
 
                 return persona;

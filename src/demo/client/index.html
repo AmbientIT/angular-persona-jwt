@@ -25,13 +25,13 @@
 
 <h1>Login</h1>
 
-<md-button ng-click="login()"
-           ng-if="!loggedUser"
+<md-button ng-if="!persona.getLoggedUser()"
+           ng-click="login()"
            class="md-button md-deep-orange-theme">
     Login
 </md-button>
 
-<md-button ng-if="loggedUser"
+<md-button ng-if="persona.getLoggedUser()"
            ng-click="logout()"
            class="md-button md-deep-red-theme">
     Logout

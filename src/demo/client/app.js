@@ -9,18 +9,18 @@ angular.module('demo.app', [
     })
 
     .controller('DemoAppController', function DemoAppController($scope, $http, $window, $log, persona) {
+
+        $scope.persona = persona;
+
         $scope.login = function () {
             persona.login().then(function (loggedUser) {
-                $scope.loggedUser = loggedUser;
                 $log.info('Logged In', loggedUser);
             })
         };
 
         $scope.logout = function () {
-            persona.logout().then(function () {
-                $scope.loggedUser = null;
-                $log.info('Logged Out');
-            });
+            persona.logout();
+            $log.info('Logged Out');
         };
 
         $scope.checkLoggedIn = function () {

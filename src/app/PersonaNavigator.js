@@ -2,37 +2,17 @@ angular.module('angular-persona-jwt.navigator', [])
 
     .service('personaNavigator', function PersonaNavigator($window, $q) {
 
-        var resolveLoginPromise = null;
-        var resolveLogoutPromise = null;
-
-        function onLogin(assertion) {
-            if (resolveLoginPromise)
-                resolveLoginPromise(assertion);
-        }
-
-        function onLogout() {
-            if (resolveLogoutPromise)
-                resolveLogoutPromise();
-        }
-
-        $window.navigator.id.watch({
-            loggedInUser: null,
-            onlogin: onLogin,
-            onlogout: onLogout
-        });
-
-        this.requestLogin = function () {
-            return $q(function (resolve) {
-                resolveLoginPromise = resolve;
-                $window.navigator.id.request();
-            });
+        this.login = function () {
+            return $q(function (resolve, reject) {
+                $window.navigator.id.get(function (assertion) {
+                    if (assertion) resolve(assertion);
+                    else reject({message: 'Invalid Persona credentials'});
+                });
+            })
         };
 
         this.logout = function () {
-            return $q(function (resolve) {
-                resolveLogoutPromise = resolve;
-                $window.navigator.id.logout();
-            });
+            $window.navigator.id.logout();
         };
 
     });

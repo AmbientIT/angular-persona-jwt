@@ -17,18 +17,13 @@ describe('Persona', function () {
 
     beforeEach(module('angular-persona-jwt', function mockPersonaNavigator($provide) {
         personaNavigatorMock = {
-            requestLogin: function () {
+            login: function () {
                 return $q(function (resolve) {
                     resolve(dummyAssertion);
                 });
             },
-            logout: function () {
-                return $q(function (resolve) {
-                    resolve();
-                });
-            }
+            logout: jasmine.createSpy('logout')
         };
-        spyOn(personaNavigatorMock, 'logout').and.callThrough();
         $provide.value('personaNavigator', personaNavigatorMock);
     }));
 
@@ -55,6 +50,10 @@ describe('Persona', function () {
             $httpBackend.verifyNoOutstandingExpectation();
         });
     }
+
+    afterEach(function () {
+        $window.localStorage.clear();
+    });
 
     function expectNotToBeExecuted() {
         expect('path').toBe('not executed');
@@ -94,7 +93,13 @@ describe('Persona', function () {
                                 expect(token).toBe(dummyToken);
                             });
                         });
-                        //
+
+                        it('returns logged user', function () {
+                            persona.login().then(function () {
+                                expect(persona.getLoggedUser()).toBe(dummyUser);
+                            })
+                        });
+
                         it('adds token to subsequent HTTP request headers', function () {
                             var expectedHeaders = {
                                 Accept: 'application/json, text/plain, */*',
@@ -111,22 +116,30 @@ describe('Persona', function () {
                             // TODO Remove duplication of persona.logout() calls
                             it('calls personaNavigator.logout()', function () {
                                 persona.login()
-                                    .then(function logout() {
-                                        return persona.logout();
-                                    }).then(function () {
+                                    .then(function () {
+                                        persona.logout();
                                         expect(personaNavigatorMock.logout).toHaveBeenCalled();
                                     });
                             });
 
-                            it('removes token from local storage', function () {
-                                persona.login()
-                                    .then(function logout() {
-                                        return persona.logout();
-                                    }).then(function () {
-                                        var storedToken = $window.localStorage.getItem('angular-persona-jwt-token');
-                                        expect(storedToken).toBe(null);
-                                    });
+                            it('does NOT return logged user', function () {
+                                persona.login().then(function () {
+                                    persona.logout();
+                                    expect(persona.getLoggedUser()).toBe(null);
+                                })
                             });
+
+                            it('does NOT add token to subsequent HTTP request headers', function () {
+                                var expectedHeaders = {
+                                    Accept: 'application/json, text/plain, */*'
+                                };
+                                $httpBackend.expectGET('/url', expectedHeaders).respond('OK');
+                                persona.login().then(function () {
+                                    persona.logout();
+                                    $http.get('/url');
+                                });
+                            });
+
                         });
 
                     });
@@ -173,9 +186,16 @@ describe('Persona', function () {
                             expect(error.message).toBe('invalid assertion');
                         });
                 });
+
+                it('calls logout', function () {
+                    persona.login().catch(function () {
+                        expect(personaNavigatorMock.logout).toHaveBeenCalled();
+                    });
+                });
             });
 
         });
+
     });
 
     describe('given custom auth backend url', function () {
@@ -188,6 +208,11 @@ describe('Persona', function () {
             persona.login();
             $httpBackend.flush();
         });
+    });
+
+    it('returns logged user from local storage', function () {
+        $window.localStorage.setItem('angular-persona-jwt-logged-user', dummyUser);
+        expect(persona.getLoggedUser()).toBe(dummyUser);
     });
 
 });
