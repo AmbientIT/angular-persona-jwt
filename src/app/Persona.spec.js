@@ -17,12 +17,11 @@ describe('Persona', function () {
 
     beforeEach(module('angular-persona-jwt', function mockPersonaNavigator($provide) {
         personaNavigatorMock = {
-            login: function () {
+            get: function () {
                 return $q(function (resolve) {
                     resolve(dummyAssertion);
                 });
-            },
-            logout: jasmine.createSpy('logout')
+            }
         };
         $provide.value('personaNavigator', personaNavigatorMock);
     }));
@@ -113,15 +112,6 @@ describe('Persona', function () {
 
                         describe('when user logs out', function () {
 
-                            // TODO Remove duplication of persona.logout() calls
-                            it('calls personaNavigator.logout()', function () {
-                                persona.login()
-                                    .then(function () {
-                                        persona.logout();
-                                        expect(personaNavigatorMock.logout).toHaveBeenCalled();
-                                    });
-                            });
-
                             it('does NOT return logged user', function () {
                                 persona.login().then(function () {
                                     persona.logout();
@@ -185,12 +175,6 @@ describe('Persona', function () {
                         .catch(function (error) {
                             expect(error.message).toBe('invalid assertion');
                         });
-                });
-
-                it('calls logout', function () {
-                    persona.login().catch(function () {
-                        expect(personaNavigatorMock.logout).toHaveBeenCalled();
-                    });
                 });
             });
 

@@ -18,13 +18,12 @@ angular.module('angular-persona-jwt', [
                 var persona = this;
 
                 persona.login = function () {
-                    return personaNavigator.login()
+                    return personaNavigator.get()
                         .then(function validateAssertion(assertion) {
                             var serverUrl = options.authBackendUrl ? options.authBackendUrl : '';
                             return $http.post(serverUrl + '/auth/login', {assertion: assertion});
                         })
                         .catch(function handleInvalidAssertionError(response) {
-                            personaNavigator.logout();
                             if (response.status === 401)
                                 return $q.reject({message: 'invalid assertion'});
                             else
@@ -48,7 +47,6 @@ angular.module('angular-persona-jwt', [
                 persona.logout = function () {
                     $window.localStorage.removeItem(TOKEN_STORAGE_KEY);
                     $window.localStorage.removeItem(LOGGED_USER_STORAGE_KEY);
-                    personaNavigator.logout();
                 };
 
                 persona.getLoggedUser = function () {
