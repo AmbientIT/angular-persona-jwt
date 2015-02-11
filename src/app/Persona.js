@@ -17,6 +17,7 @@ angular.module('angular-persona-jwt', [
 
             $get: function Persona($http, $window, $q, $log, personaNavigator, PERSONA_TOKEN_STORAGE_KEY, PERSONA_LOGGED_USER_STORAGE_KEY) {
                 var persona = this;
+                var loggedUser = null;
 
                 persona.login = function () {
                     return personaNavigator.get()
@@ -40,18 +41,21 @@ angular.module('angular-persona-jwt', [
                         })
                         .then(function storeInLocalStorage(data) {
                             $window.localStorage.setItem(PERSONA_TOKEN_STORAGE_KEY, data.token);
-                            $window.localStorage.setItem(PERSONA_LOGGED_USER_STORAGE_KEY, data.loggedUser);
+                            $window.localStorage.setItem(PERSONA_LOGGED_USER_STORAGE_KEY, JSON.stringify(data.loggedUser));
                             return data.loggedUser;
                         });
                 };
 
                 persona.logout = function () {
+                    loggedUser = null;
                     $window.localStorage.removeItem(PERSONA_TOKEN_STORAGE_KEY);
                     $window.localStorage.removeItem(PERSONA_LOGGED_USER_STORAGE_KEY);
                 };
 
                 persona.getLoggedUser = function () {
-                    return $window.localStorage.getItem(PERSONA_LOGGED_USER_STORAGE_KEY);
+                    if (!loggedUser)
+                        loggedUser = JSON.parse($window.localStorage.getItem(PERSONA_LOGGED_USER_STORAGE_KEY));
+                    return loggedUser;
                 };
 
                 return persona;

@@ -25,6 +25,8 @@
 
 <h1>Login</h1>
 
+<h3 ng-if="persona.getLoggedUser()">Welcome, <span ng-bind="persona.getLoggedUser().email"></span></h3>
+
 <md-button ng-if="!persona.getLoggedUser()"
            ng-click="login()"
            class="md-button md-deep-orange-theme">

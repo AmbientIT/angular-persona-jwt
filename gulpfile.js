@@ -53,7 +53,8 @@ gulp.task('dev', [
     'buildDev',
     'startDemoStaticServer',
     'startDemoNodeServer',
-    'watchSource'
+    'watchSource',
+    'tdd'
 ], function () {
 });
 

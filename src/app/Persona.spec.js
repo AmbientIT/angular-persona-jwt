@@ -11,7 +11,7 @@ describe('Persona', function () {
         $http;
 
     var dummyAssertion = 'Dummy Assertion',
-        dummyUser = 'Dummy User',
+        dummyUser = {username: 'Dummy User'},
         dummyToken = 'Dummy Token',
         dummyAuthBackendUrl = 'http://dummy.domain.com:123456';
 
@@ -76,7 +76,7 @@ describe('Persona', function () {
 
                     it('resolves login promise with the logged user', function () {
                         persona.login().then(function (loggedUser) {
-                            expect(loggedUser).toBe(dummyUser);
+                            expect(loggedUser).toEqual(dummyUser);
                         });
                     });
 
@@ -95,8 +95,16 @@ describe('Persona', function () {
 
                         it('returns logged user', function () {
                             persona.login().then(function () {
-                                expect(persona.getLoggedUser()).toBe(dummyUser);
+                                expect(persona.getLoggedUser()).toEqual(dummyUser);
                             })
+                        });
+
+                        it('should return same (===) logged user when calling getLoggedUser() twice in a row (otherwise it creates an infinite digest loop)', function () {
+                            persona.login().then(function () {
+                                var first = persona.getLoggedUser();
+                                var second = persona.getLoggedUser();
+                                expect(first).toBe(second);
+                            });
                         });
 
                         it('adds token to subsequent HTTP request headers', function () {
@@ -117,6 +125,14 @@ describe('Persona', function () {
                                     persona.logout();
                                     expect(persona.getLoggedUser()).toBe(null);
                                 })
+                            });
+
+                            it('does NOT return logged user from local cache', function () {
+                                persona.login().then(function () {
+                                    persona.getLoggedUser();
+                                    persona.logout();
+                                    expect(persona.getLoggedUser()).toBe(null);
+                                });
                             });
 
                             it('does NOT add token to subsequent HTTP request headers', function () {
@@ -195,8 +211,8 @@ describe('Persona', function () {
     });
 
     it('returns logged user from local storage', function () {
-        $window.localStorage.setItem('angular-persona-jwt-logged-user', dummyUser);
-        expect(persona.getLoggedUser()).toBe(dummyUser);
+        $window.localStorage.setItem('angular-persona-jwt-logged-user', JSON.stringify(dummyUser));
+        expect(persona.getLoggedUser()).toEqual(dummyUser);
     });
 
 });
