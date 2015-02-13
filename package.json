@@ -1,6 +1,6 @@
 {
   "name": "angular-persona-jwt",
-  "description" : "angularJs module to authenticate an app with Mozilla Persona",
+  "description": "AngularJS module to authenticate an app with Mozilla Persona",
   "author": {
     "name": "Charles Jacquin",
     "email": "charles.jacquin@autistici.org"
@@ -11,7 +11,7 @@
       "email": "mikael.couzic@gmail.com"
     }
   ],
-  "version": "0.0.1",
+  "version": "0.2.0",
   "homepage": "https://github.com/Charl---/angular-persona-jwt",
   "license": "MIT",
   "bugs": "https://github.com/Charl---/angular-persona-jwt/issues",
@@ -20,7 +20,7 @@
     "url": "https://github.com/Charl---/angular-persona-jwt.git"
   },
   "devDependencies": {
-    "body-parser": "~1.8.1",
+    "body-parser": "*",
     "connect-livereload": "*",
     "cors": "*",
     "del": "*",

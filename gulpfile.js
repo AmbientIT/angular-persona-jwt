@@ -23,7 +23,7 @@ var livereloadport = 35729,
     serverport = 5000,
     header = ['/**',
         ' * ' + pkg.name + ' - ' + pkg.description,
-        ' * @version v' + pkg.version,
+        ' * @version ' + pkg.version,
         ' * @link ' + pkg.homepage,
         ' * @license ' + pkg.license,
         ' */'
