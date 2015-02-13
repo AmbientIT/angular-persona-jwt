@@ -27,7 +27,7 @@ angular.module('angular-persona-jwt', [
                         })
                         .catch(function handleInvalidAssertionError(response) {
                             if (response.status === 401)
-                                return $q.reject({message: 'invalid assertion'});
+                                return $q.reject({message: 'Error validating assertion on the server'});
                             else
                                 return $q.reject(response);
                         })
