@@ -43,6 +43,10 @@ angular.module('angular-persona-jwt', [
                             $window.localStorage.setItem(PERSONA_TOKEN_STORAGE_KEY, data.token);
                             $window.localStorage.setItem(PERSONA_LOGGED_USER_STORAGE_KEY, JSON.stringify(data.loggedUser));
                             return data.loggedUser;
+                        })
+                        .then(function storeInService(_loggedUser_) {
+                            loggedUser = _loggedUser_;
+                            return loggedUser;
                         });
                 };
 

@@ -106,6 +106,9 @@ describe('Persona', function () {
                         $httpBackend.flush();
                     });
 
+                    // TODO
+                    it('adds token ONLY for requests sent to auth server');
+
                     describe('when user logs out', function () {
                         beforeEach(function () {
                             persona.logout();
@@ -131,6 +134,25 @@ describe('Persona', function () {
                             $httpBackend.flush();
                         });
 
+                    });
+
+                    describe('when user logs in again with another profile', function () {
+                        var anotherUser;
+                        beforeEach(function () {
+                            persona.getLoggedUser();
+                            anotherUser = {username: 'Another User'};
+                            $httpBackend
+                                .expectPOST('/auth/login', {'assertion': dummyAssertion})
+                                .respond({loggedUser: anotherUser, token: dummyToken});
+                            persona.login().then(function (_loggedUser_) {
+                                loggedUser = _loggedUser_;
+                            });
+                            $httpBackend.flush();
+                        });
+
+                        it('returns second user profile', function () {
+                            expect(persona.getLoggedUser()).toEqual(anotherUser);
+                        });
                     });
 
                 });
