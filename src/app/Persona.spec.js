@@ -22,9 +22,7 @@ describe('Persona', function () {
         beforeEach(module(function mockPersonaNavigator($provide) {
             personaNavigatorMock = {
                 get: function () {
-                    return $q(function (resolve) {
-                        resolve(dummyAssertion);
-                    });
+                    return $q.when(dummyAssertion);
                 }
             };
             $provide.value('personaNavigator', personaNavigatorMock);
