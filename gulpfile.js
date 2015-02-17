@@ -26,8 +26,14 @@ var livereloadport = 35729,
         ' * @version ' + pkg.version,
         ' * @link ' + pkg.homepage,
         ' * @license ' + pkg.license,
-        ' */'
-    ].join('\n');
+        '*/' +
+        '' +
+        '(function(){' +
+        '"use strict";'
+
+
+    ].join('\n'),
+    footer = '})();';
 
 // PATHS
 var pathToJsSource = ['src/app/**/*.js', '!src/app/**/*.spec.js'],
@@ -123,7 +129,7 @@ gulp.task('cleanDistFolder', function (cb) {
 });
 
 gulp.task('distJs', function () {
-    gulp.src([pathToJsSource])
+    gulp.src(pathToJsSource)
         .pipe(concat('angular-persona-jwt.js', {
             process: function (src) {
                 return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
@@ -136,7 +142,7 @@ gulp.task('distJs', function () {
 });
 
 gulp.task('distMinifiedJs', function () {
-    gulp.src([pathToJsSource])
+    gulp.src(pathToJsSource)
         .pipe(concat('angular-persona-jwt.min.js', {
             process: function (src) {
                 return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
